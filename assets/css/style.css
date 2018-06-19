@@ -7,3 +7,10 @@ body{
   width: 100%;
   margin: 0;
 }
+
+h1{
+  letter-spacing: 5px;
+  font-weight: bold;
+  font-style: italic;
+  text-transform: uppercase;
+}
