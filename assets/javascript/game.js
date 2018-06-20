@@ -5,8 +5,8 @@ var guessesLeft = 15;
 var guessesTaken = 0;
 var guessHolder = [];
 var letters;
-var alphabet = ["a","b","c","d","e","f","h","i","j","k","l",
-                "m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+var wordChosen;
+
 
 
 //make objects
@@ -14,22 +14,28 @@ var hangman = {
   breweries: ["community", "deep ellum", "jester king"],
   hints: ["Hint 1","Hint 2","Hint 3"],
   brewIndex: 0,
+  blanks: "_",
+  //locations
+  hangmanText: document.getElementById("hangmanText"),      
+
 
 
   //choose word to use by choosing index
   chooseBrewery: function(){
     this.brewIndex = Math.floor(Math.random()* this.breweries.length);
+
+    wordChosen = this.breweries[this.brewIndex];   
     
     //test that this is working
-    //console.log(this.brewIndex);
+    console.log(this.brewIndex);
+    console.log(wordChosen);
   },
 
   //create the blanks that you need to fill in 
   makeBlanks: function(){
-    var hangmanText = document.getElementById("hangmanText");
-    var clueText = document.getElementById("clueText");
-    var blanks = "_";
-    var wordChosen = this.breweries[this.brewIndex];
+    
+    //hint location
+    var clueText = document.getElementById("clueText"); 
 
     //display corrisponding hint
     clueText.textContent = this.hints[this.brewIndex];
@@ -37,23 +43,43 @@ var hangman = {
     // build blanks
     for(var i = 1; i < wordChosen.length; i++){
       if(wordChosen.charAt(i) === " "){
-        blanks = blanks + " ";
+        this.blanks = this.blanks + " ";
       }
       else{
-        blanks = blanks + "_";
+        this.blanks = this.blanks + "_";
       }
 
     //end of for
     }
 
     //testing
-    console.log(blanks);
+    console.log(this.blanks);
 
-
-    //replae text
-    hangmanText.textContent = blanks;
+    //replace text
+    this.hangmanText.textContent = this.blanks;
 
   //end of makeBlanks
+  },
+
+  //to fill in letters
+  testLetter: function(char){
+
+    for(var i = 0; i < wordChosen.length; i++){
+
+      if(wordChosen.charAt(i) === char){
+
+        this.blanks = this.blanks.substr(0, i) + char + this.blanks.substr(i + char.length);
+
+      }
+    //end of for
+    }
+
+    console.log(this.blanks);
+
+    //replace content with guessed characters
+    this.hangmanText.textContent = this.blanks;
+
+  //end of test letter
   },
 
 
@@ -61,6 +87,7 @@ var hangman = {
 //end of hangman object
 };
 
+//set up game
 hangman.chooseBrewery();
 hangman.makeBlanks();
 
@@ -92,7 +119,11 @@ document.onkeyup = function(event){
     }
 
     userText.textContent = guessHolder.join(" ");
-  //end if
+  
+    //test the letter
+    hangman.testLetter(userGuess);
+
+    //end if
   }
   
 };
